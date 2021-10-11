@@ -1,0 +1,24 @@
+#!/bin/bash
+#SBATCH --job-name=q3_POSIX_job	 ### name your job 
+#SBATCH --time=00:30:00		     ### hh:mm:ss or dd-hh:mm:ss
+#SBATCH --mem=32G				 ### memory setting is max @ 4 GB per core
+#SBATCH --ntasks=1				 ### launch one process
+#SBATCH --cpus-per-task=16		 ### multi-threaded processes
+
+#SBATCH --partition=short,comp,gpu
+
+#SBATCH --output=q3_POSIX.%j.out
+
+if [ ! -f q3_POSIX ]
+then
+ gcc q3_POSIX.c -lpthread -o q3_POSIX -lm
+else
+ if [ q3_POSIX.c -nt q3_POSIX ]
+ then
+  gcc q3_POSIX.c -lpthread -o q3_POSIX -lm
+ fi
+fi
+
+./q3_POSIX 10000000
+
+exit 0

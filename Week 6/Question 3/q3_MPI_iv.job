@@ -1,0 +1,27 @@
+#!/bin/bash 
+#SBATCH --job-name=q3_MPI_job       ### name your job 
+#SBATCH --time=00:30:00		        ### hh:mm:ss or dd-hh:mm:ss
+#SBATCH --mem=32G				    ### memory setting is max @ 4 GB per core
+#SBATCH --ntasks=32				    ### equivalent to -np 32
+#SBATCH --cpus-per-task=1		    ### single-threaded processes
+#SBATCH --ntasks-per-node=16        ### 16 cores per node
+
+#SBATCH --partition=short,comp,gpu
+
+#SBATCH --output=q3_MPI.%j.out
+
+module load openmpi/3.1.6-ucx
+
+if [ ! -f q3_MPI_iv ]
+then
+ mpicc q3_MPI.c -o q3_MPI_iv -lm
+else
+ if [ q3_MPI.c -nt q3_MPI_iv ]
+ then
+  mpicc q3_MPI.c -o q3_MPI_iv -lm
+ fi
+fi
+
+srun q3_MPI_iv -u 10000000
+
+exit 0

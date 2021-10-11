@@ -1,0 +1,24 @@
+#!/bin/bash
+#SBATCH --job-name=q3_serial_job	 ### name your job 
+#SBATCH --time=00:30:00		     ### hh:mm:ss or dd-hh:mm:ss
+#SBATCH --mem=32G				 ### memory setting is max @ 4 GB per core
+#SBATCH --ntasks=1				 ### launch one process
+#SBATCH --cpus-per-task=1		 ### single threaded processes
+
+#SBATCH --partition=short,comp,gpu
+
+#SBATCH --output=q3_serial.%j.out
+
+if [ ! -f q3_serial ]
+then
+ gcc q3_serial.c -o q3_serial -lm
+else
+ if [ q3_serial.c -nt q3_serial ]
+ then
+  gcc q3_serial.c -o q3_serial -lm
+ fi
+fi
+
+./q3_serial 10000000
+
+exit 0
